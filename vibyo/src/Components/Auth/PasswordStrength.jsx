@@ -20,6 +20,8 @@ const colors = [
     if (/[A-Z]/.test(password)) score++;
     if (/\d/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
+    if (password.length <= 4) return Math.min(2,score);
+    if(password.length <= 6 && password.length > 4) return Math.min(3,score);
     return score;
   }
 

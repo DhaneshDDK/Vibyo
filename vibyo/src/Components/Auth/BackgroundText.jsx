@@ -1,19 +1,16 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import Login from './Login'
+import { debounce } from 'lodash';
 import Signup from './Signup'
 
 const BackgroundText = ({mobileToggle,setMobileToggle}) => {
   const [isLeft, setIsLeft] = useState(false);
   const [toggleComponent, setToggleComponent] = useState(isLeft ? <Signup isLeft = {isLeft} setIsLeft = {setIsLeft} mobileToggle={mobileToggle}/> : <Login isLeft = {isLeft} setIsLeft = {setIsLeft} mobileToggle={mobileToggle}/>);
  
-  const handleResize = () => {
-    if (window.innerWidth < 768 || window.innerHeight < 580) { 
-      setMobileToggle(true);
-    } else {
-      setMobileToggle(false);
-    }
-  }
+  const handleResize = debounce(() => {
+    setMobileToggle(window.innerWidth < 768 || window.innerHeight < 580);
+  }, 500);
 
   useEffect(()=>{
     handleResize();

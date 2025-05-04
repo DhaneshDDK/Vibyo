@@ -8,7 +8,7 @@ const Auth = () => {
   return (
     <div className='w-screen h-screen bg-BlueBackground flex items-center justify-center'>
        <div className={`absolute ${mobileToggle?"right-10 top-10":"left-10 top-10"} flex items-center justify-center gap-4`}>
-         <img src={Logo} alt="logo"/> 
+         <img src={Logo} alt="logo" width={mobileToggle? 40: 70}/> 
          <div className={`font-serif ${mobileToggle?"text-xl":"text-3xl"}`}>VIBYO</div>
        </div>
        <BackgroundText mobileToggle={mobileToggle} setMobileToggle={setMobileToggle}/>
