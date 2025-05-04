@@ -2,6 +2,7 @@ import React from 'react'
 import BackgroundText from './BackgroundText'
 import Logo from '../../assets/Logo.png'
 import { useState } from 'react'
+
 const Auth = () => {
   const [mobileToggle, setMobileToggle] = useState((window.innerWidth < 768 || window.innerHeight < 580) ? true : false);
   return (
