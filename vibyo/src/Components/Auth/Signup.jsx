@@ -48,21 +48,21 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
             <div className='text-red-400 font-bold text-3xl'>SIGN UP</div>
             <div>
                <div className='flex items-center justify-between gap-2 w-full'>
-                   <input type="text" placeholder='Full Name' value={fullName} onChange={e=>setFullName(e.target.value)} required className='outline-none px-4 py-2 w-full box-border'/>
+                   <input type="text" placeholder='Full Name*' value={fullName} onChange={e=>setFullName(e.target.value)} required className='outline-none px-4 py-2 w-full box-border'/>
                    <FaUserLarge color='gray'/>
                </div>
                <div className='h-[1px] w-full bg-gray-400'></div>
             </div>
             <div>
                <div className='flex items-center justify-between gap-2 w-full'>
-                   <input type="email" placeholder='Email' value={email} onChange={e=>setEmail(e.target.value)} required className='outline-none px-4 py-2 w-full box-border'/>
+                   <input type="email" placeholder='Email*' value={email} onChange={e=>setEmail(e.target.value)} required className='outline-none px-4 py-2 w-full box-border'/>
                    <MdEmail color='gray'/>
                </div>
                <div className='h-[1px] w-full bg-gray-400'></div>
             </div>
             <div>
                <div className='flex items-center justify-between gap-2 w-full'>
-                  <input type={showPassword?"text":"password"} value={password} onChange={e=>setPassword(e.target.value)} required placeholder='Password' className='outline-none box-border px-4 py-2 w-full'/>
+                  <input type={showPassword?"text":"password"} value={password} onChange={e=>setPassword(e.target.value)} required placeholder='Password*' className='outline-none box-border px-4 py-2 w-full'/>
                   {
                    !showPassword ? <IoEye color='gray' onClick={handlePassword} className='cursor-pointer'/> : <IoEyeOff  onClick={handlePassword} className='cursor-pointer' color='gray' />
                   }
@@ -73,7 +73,7 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
             </div>
             <div>
                <div className='flex items-center justify-between gap-2 w-full'>
-                  <input type={showConfirmPassword?"text":"password"} value={confirmPassword} onChange={e=>setConfirmPassword(e.target.value)} required placeholder='Confirm password' className='outline-none box-border px-4 py-2 w-full'/>
+                  <input type={showConfirmPassword?"text":"password"} value={confirmPassword} onChange={e=>setConfirmPassword(e.target.value)} required placeholder='Confirm password*' className='outline-none box-border px-4 py-2 w-full'/>
                   {
                    !showConfirmPassword ? <IoEye color='gray' onClick={handleConfirmPassword} className='cursor-pointer'/> : <IoEyeOff  onClick={handleConfirmPassword} className='cursor-pointer' color='gray' />
                   }
