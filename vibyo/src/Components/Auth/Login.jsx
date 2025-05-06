@@ -3,6 +3,7 @@ import { MdEmail } from "react-icons/md";
 import { IoEye, IoEyeOff  } from "react-icons/io5";
 import { useState } from 'react'
 import OAuth from './OAuth';
+import { toast } from 'react-toastify';
 import PasswordStrength from './PasswordStrength'
 
 
@@ -22,7 +23,7 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
     const handleLoginForm = (e)=>{
       e.preventDefault();
       if(!validatePassword(password)){
-        alert("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.");
+        toast.warn("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.");
         return;
       }
     }

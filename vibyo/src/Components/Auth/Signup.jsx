@@ -4,7 +4,7 @@ import { MdEmail } from "react-icons/md";
 import { IoEye, IoEyeOff  } from "react-icons/io5";
 import { useState } from 'react'
 import OAuth from './OAuth';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import PasswordStrength from './PasswordStrength';
 
 const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
@@ -85,7 +85,6 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
             <button className='bg-red-400 text-white rounded-md px-6 py-2'>SIGN UP</button>
             </div>
             <OAuth/>
-            <ToastContainer />
        </form>
   )
 }

@@ -35,13 +35,13 @@ const colors = [
     <div className={`flex items-center justify-start gap-10 w-full`}>
       {passwordStrength >= 1 && (
         <>
-          <div className="w-1/2 bg-gray-200 h-2 rounded">
+          <div className="w-1/2 bg-gray-200 h-1 rounded">
             <div
-              className={`h-2 transition-all duration-300 ${colors[passwordStrength].color}`}
+              className={`h-1 transition-all duration-300 ${colors[passwordStrength].color}`}
               style={{
                 width: `${(passwordStrength / 5) * 100}%`,
                 borderRadius: 'inherit',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+                boxShadow: '0 1px 4px rgba(0, 0, 0, 0.2)',
               }}
             />
           </div>

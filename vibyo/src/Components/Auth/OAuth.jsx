@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { GoogleLogin } from '@react-oauth/google'
-import { jwtDecode } from 'jwt-decode';
 import {useSelector} from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../Redux/UserSlice';
@@ -11,14 +10,14 @@ const OAuth = () => {
   useEffect(()=>{
     const token = localStorage.getItem('token');
     if(token && !user){
-      const userObject = jwtDecode(token);
-      dispatch(setUser({user: userObject, token}));
+      //call backend to get refresh token
+      // dispatch(setUser({user: userObject, token}));
     }
   },[]);
 
   const responseMessage = (response) => {
-    const userObject = jwtDecode(response.credential);
-    dispatch(setUser({user: userObject, token: response.credential}));
+    // const userObject = jwtDecode(response.credential);
+    // dispatch(setUser({user: userObject, token: response.credential}));
 };
 const errorMessage = (error) => {
     console.log("Error occurred: ", error);
