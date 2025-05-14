@@ -5,7 +5,7 @@ const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 exports.generateAccessToken = (user)=>{
-return jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+return jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: '1hr' });
 }
 
 exports.generateRefreshToken = async (user)=>{
@@ -58,4 +58,15 @@ exports.deleteRefreshToken = async (token) => {
         console.error("Error deleting refresh token:", error);
         throw error;
     }   
+}
+
+exports.fetchRefreshToken = async (token)=>{
+    try {
+        const refreshToken = await Token.findOne({refresh_token : token});
+        if(!refreshToken) throw new Error("Refresh token not found");
+        return refreshToken;
+    } catch (error) {
+        console.log("Error fetching the refresh token", error);
+        throw error;
+    }
 }

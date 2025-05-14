@@ -1,5 +1,4 @@
 const USER = require('../../Models/User');
-
 exports.InsertUser = async (user) => {
     try {
         const newUser = new USER(user);
