@@ -32,8 +32,8 @@ exports.verifyToken = async (req,res,next)=>{
       const isAccessTokenRefreshed = await refreshAccessToken(req,res);
       if(isAccessTokenRefreshed) next();
       else{
-        // res.clearCookie('accessToken');
-        // res.clearCookie('refreshToken');
+        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken');
         res.status(500).json({ error: 'Invalid Token' });
       }
   }
