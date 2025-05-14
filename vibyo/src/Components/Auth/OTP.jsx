@@ -46,10 +46,10 @@ const OTP = ({email, length = 6}) => {
         }else if(e.key === "Backspace" && index === 0){
             newOTP[index] = "";
             inputsRef.current[index].value = "";
-        }else if(isDigit && newOTP[index] !== "" && index < length - 1){
+        }else if(isDigit && newOTP[index] !== ""){
             if (index + 1 < length && newOTP[index + 1] !== "") {
                 for (let i = length - 1; i > index; i--) {
-                  newOTP[i] = newOTP[i - 1];
+                  newOTP[i] = newOTP[i - 1];  
                   inputsRef.current[i].value = newOTP[i]; 
                 }
               }

@@ -6,6 +6,8 @@ import { useState } from 'react'
 import OAuth from './OAuth';
 import { toast } from 'react-toastify';
 import PasswordStrength from './PasswordStrength';
+import { PostMethod } from '../../ApiService/Auth';
+import ServerRoutes from '../../Routes/Constants';
 
 const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
    const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +26,11 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
       setShowConfirmPassword(!showConfirmPassword);
    }
 
+   const validateEmail = (email)=>{
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+   }
+
    const validatePassword = (password, confirmPassword)=>{
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
       if(password !== confirmPassword){
@@ -36,10 +43,36 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
          }
          return true;
    }
-   const handleSignupForm = (e)=>{
+   const handleSignupForm = async (e)=>{
       e.preventDefault();
+      if(!fullName || !email || !password || !confirmPassword){
+         toast.warn("All fields are required");
+         return;
+      }
+      
+      if(!validateEmail(email)){
+         toast.warn("Invalid email format");
+         return;
+      }
+      
       if(!validatePassword(password, confirmPassword)){
          return;
+      }
+      
+      const signupData = {
+         username: fullName,
+         email,
+         password
+      }
+
+      try {
+         const response = await PostMethod(ServerRoutes.Auth.Register, signupData);
+         const responseData = await response.json();
+         console.log(responseData);
+         toast.success("Registered successfully");
+      } catch (error) {
+         console.error("Error during signup:", error);
+         toast.error("Signup failed. Please try again.");
       }
    }
   return (
@@ -62,7 +95,7 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
             </div>
             <div>
                <div className='flex items-center justify-between gap-2 w-full'>
-                  <input type={showPassword?"text":"password"} value={password} onChange={e=>setPassword(e.target.value)} required placeholder='Password*' className='outline-none box-border px-4 py-2 w-full'/>
+                  <input type={showPassword?"text":"password"} value={password} onChange={e=>setPassword(e.target.value)} required placeholder='Password* (Min 8 chars, incl. upper, lower & number)' className='outline-none box-border px-4 py-2 w-full'/>
                   {
                    !showPassword ? <IoEye color='gray' onClick={handlePassword} className='cursor-pointer'/> : <IoEyeOff  onClick={handlePassword} className='cursor-pointer' color='gray' />
                   }

@@ -1,20 +1,35 @@
 require('dotenv').config();
-const app = require('express')();
-const bodyParser = require('body-parser');
+const express = require('express');
+const app = express();
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const { createTopic, deleteTopic } = require('./Kafka/KafkaConfig.js');
+const connectDB = require('./Configurations/MongoDB.js');
 
-app.use(cors({origin : '*'
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
 }));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended : true}));
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({extended : true}));
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+const startServer = async () => {
+    try {
+        await connectDB();
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error('Failed to connect to MongoDB:', error);
+        process.exit(1); 
+    }
+};
+
+startServer();
+
 
 app.get('/',(req,res)=>{
     console.log('Received request to root endpoint');

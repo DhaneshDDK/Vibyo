@@ -5,7 +5,8 @@ import { useState } from 'react'
 import OAuth from './OAuth';
 import { toast } from 'react-toastify';
 import PasswordStrength from './PasswordStrength'
-
+import { PostMethod } from '../../ApiService/Auth';
+import ServerRoutes from '../../Routes/Constants'
 
 const Login = ({isLeft,setIsLeft,mobileToggle}) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -20,11 +21,43 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
       return passwordRegex.test(password);
     }
-    const handleLoginForm = (e)=>{
+
+    const validateEmail = (email)=>{
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    const handleLoginForm = async (e)=>{
       e.preventDefault();
+
+      if(!email || !password){
+        toast.warn("All fields are required");
+        return;
+      }
+
+      if(!validateEmail(email)){
+        toast.warn("Invalid email format"); 
+        return;
+      }
+
       if(!validatePassword(password)){
         toast.warn("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.");
         return;
+      }
+      
+      const loginData = {
+        email,
+        password
+      }
+      
+      try {
+         const response = await PostMethod(ServerRoutes.Auth.Login, loginData);
+         const responseData = await response.json();
+         console.log(responseData);
+         toast.success("Loggedin successfully");
+      } catch (error) {
+          console.error("Error during login:", error);
+          toast.error("Login failed. Please try again.");
       }
     }
 
