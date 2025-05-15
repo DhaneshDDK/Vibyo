@@ -8,15 +8,17 @@ import { toast } from 'react-toastify';
 import PasswordStrength from './PasswordStrength';
 import { PostMethod } from '../../ApiService/Auth';
 import ServerRoutes from '../../Routes/Constants';
+import UIRoutes from '../../Routes/UIRoutes'
+import { useNavigate } from 'react-router-dom';
 
 const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
    const [showPassword, setShowPassword] = useState(false);
    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [fullName, setFullName] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-
+   const [email, setEmail] = useState("");
+   const [password, setPassword] = useState("");
+   const [fullName, setFullName] = useState("");
+   const [confirmPassword, setConfirmPassword] = useState("");
+   const navigate = useNavigate(); 
 
    const handlePassword = ()=>{
       setShowPassword(!showPassword)
@@ -70,6 +72,7 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
          const responseData = await response.json();
          console.log(responseData);
          toast.success("Registered successfully");
+         navigate(UIRoutes.otp);
       } catch (error) {
          console.error("Error during signup:", error);
          toast.error("Signup failed. Please try again.");

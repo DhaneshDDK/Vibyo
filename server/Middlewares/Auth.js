@@ -26,6 +26,7 @@ exports.verifyToken = async (req,res,next)=>{
         await refreshAccessToken(req,res);
      }
      const user = verifyAccessToken(req.cookies?.accessToken);
+     if(!user.verifed) return res.status(403).json({message : "User is not verified"})
      req.user = user;
      next();
   } catch (error) {
@@ -34,7 +35,7 @@ exports.verifyToken = async (req,res,next)=>{
       else{
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
-        res.status(500).json({ error: 'Invalid Token' });
+        res.status(403).json({ error: 'Invalid Token' });
       }
   }
 
