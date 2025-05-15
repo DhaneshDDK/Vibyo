@@ -12,6 +12,7 @@ const Auth = () => {
          <div className={`font-serif ${mobileToggle?"text-xl":"text-3xl"}`}>VIBYO</div>
        </div>
        <BackgroundText mobileToggle={mobileToggle} setMobileToggle={setMobileToggle}/>
+      {/* <div className='z-[0] absolute bottom-2 text-center w-full text-sm text-gray-500'>© 2025 Vibyo. All rights reserved. Chennai</div> */}
     </div>
   )
 }

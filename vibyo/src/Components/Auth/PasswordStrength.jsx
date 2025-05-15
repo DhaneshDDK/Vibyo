@@ -45,7 +45,7 @@ const colors = [
               }}
             />
           </div>
-          <div className={`${colors[passwordStrength].text} text-[13px] font-semibold`}>
+          <div className={`${colors[passwordStrength].text} text-[11px] font-semibold`}>
             <span className='text-black'>Strength: </span>{colors[passwordStrength].strength}
           </div>
         </>

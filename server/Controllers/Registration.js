@@ -46,7 +46,7 @@ exports.Login = async (req,res)=>{
         if (loginResponse.success === "false") {
             return res.status(400).json({ error: loginResponse.message });
         }
-
+        if(!loginResponse.user.verified) return res.status(403).json({message : "User is not verified"})
         const accessToken = generateAccessToken(loginResponse.user);
         const refreshToken = await generateRefreshToken(loginResponse.user);
         res.cookie('accessToken', accessToken, { httpOnly: true });
