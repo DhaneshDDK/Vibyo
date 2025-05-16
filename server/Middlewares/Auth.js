@@ -26,8 +26,9 @@ exports.verifyToken = async (req,res,next)=>{
         await refreshAccessToken(req,res);
      }
      const user = verifyAccessToken(req.cookies?.accessToken);
-     if(!user.verifed) return res.status(403).json({message : "User is not verified"})
      req.user = user;
+     if(!user.verified) return res.status(403).json({message : "User is not verified", user : user})
+
      next();
   } catch (error) {
       const isAccessTokenRefreshed = await refreshAccessToken(req,res);

@@ -1,0 +1,1 @@
+export const userNotVerified = "User is not verified"

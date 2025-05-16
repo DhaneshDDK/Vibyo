@@ -1,17 +1,21 @@
-export const GetMethod = async (method) => {
-    const response = await fetch(method, {
+export const GetMethod = async (url) => {
+    try {
+        const response = await fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
         credentials: 'include',
-    });
-    const data = await response.json();
-    return data;
+       });
+       return response;
+    } catch (error) {
+        throw Error("Failed to send request");
+    }
 }
 
 export const PostMethod = async (url, body) => {
-    const response = await fetch(url, {
+    try {
+        const response = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -20,5 +24,8 @@ export const PostMethod = async (url, body) => {
         body: JSON.stringify(body)
     });
     return response;
+    } catch (error) {
+        throw Error("Failed to send request")
+    }
 }
 

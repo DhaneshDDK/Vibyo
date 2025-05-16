@@ -4,7 +4,8 @@ const Routes = {
     Auth: {
         Login: `${serverURL}/api/auth/login`,
         Register: `${serverURL}/api/auth/register`,
-        Remove: `${serverURL}/api/auth/remove`
+        Remove: `${serverURL}/api/auth/remove`,
+        verifyToken: `${serverURL}/api/auth/verifyToken`,
     },
     Topics: {
         GetAllTopics: `${serverURL}/api/topics/getAllTopics`,

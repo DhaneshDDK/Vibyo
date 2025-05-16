@@ -2,10 +2,12 @@ import React, { useEffect } from 'react'
 import { useState, useRef } from 'react';
 import { IoArrowBackSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const OTP = ({email, length = 6}) => {
   const [otp, setOTP] = useState(Array(length).fill(""));
   const inputsRef = useRef(Array(length).fill(null));
+  const navigate = useNavigate();
   
   const handleOTPChange = (e, index) => {
     const value = e.target.value.slice(0,1);
@@ -104,7 +106,7 @@ const OTP = ({email, length = 6}) => {
   return (
     <div className='w-screen h-screen bg-BlueBackground flex items-center justify-center '>
         <div className='border-2 w-[90%] md:w-[50%] lg:w-[35%] border-white shadow-lg rounded-2xl p-10 flex flex-col items-start justify-center gap-5'>
-            <div className='flex items-center justify-center gap-2 cursor-pointer'><IoArrowBackSharp/> <div>Back</div></div>
+            <div className='flex items-center justify-center gap-2 cursor-pointer' onClick={()=>navigate(-1   )}><IoArrowBackSharp/> <div>Back</div></div>
             <h2 className='text-2xl md:text-3xl font-bold'>Email Verification</h2>
             <div className='text-gray-500 text-sm font-serif'>Enter the {length}-digit verification code sent to {email}</div>
             <div className='flex items-center justify-center gap-1 md:gap-2 w-full'>

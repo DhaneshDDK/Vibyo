@@ -1,7 +1,12 @@
 const UIRoutes = {
-    home : '/',
-    auth : '/auth',
-    otp : '/auth/otp',
+    Auth : {
+        auth : '/auth',
+        credential : 'user',
+        otp : "otp"
+    },
+    Home : {
+        home : '/'
+    }
 }
 
 export default UIRoutes;

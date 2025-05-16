@@ -10,6 +10,8 @@ import { PostMethod } from '../../ApiService/Auth';
 import ServerRoutes from '../../Routes/Constants';
 import UIRoutes from '../../Routes/UIRoutes'
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../Redux/UserSlice';
 
 const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
    const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +21,7 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
    const [fullName, setFullName] = useState("");
    const [confirmPassword, setConfirmPassword] = useState("");
    const navigate = useNavigate(); 
+   const dispatch = useDispatch();
 
    const handlePassword = ()=>{
       setShowPassword(!showPassword)
@@ -70,9 +73,12 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
       try {
          const response = await PostMethod(ServerRoutes.Auth.Register, signupData);
          const responseData = await response.json();
-         console.log(responseData);
-         toast.success("Registered successfully");
-         navigate(UIRoutes.otp);
+         if(response.status===200) {
+            toast.success("Registered successfully");
+            dispatch(setUser({user:responseData?.user, token:responseData?.token}));
+            navigate(`${UIRoutes.Auth.auth}/${UIRoutes.Auth.otp}`);
+         }
+         else toast.error(responseData.error);
       } catch (error) {
          console.error("Error during signup:", error);
          toast.error("Signup failed. Please try again.");

@@ -34,7 +34,7 @@ const LoginChecker = async (req)=>{
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return {success : "false", message: 'Invalid password' };
+            return {success : "false", message: 'Incorrect password' };
         }
         const {password: _, ...userWithoutPassword} = user._doc;
         return {success : "true", message: 'Login successful', user: userWithoutPassword};       
@@ -44,15 +44,15 @@ exports.Login = async (req,res)=>{
     try {
         const loginResponse = await LoginChecker(req);
         if (loginResponse.success === "false") {
-            return res.status(400).json({ error: loginResponse.message });
+            return res.status(400).json({ message: loginResponse.message });
         }
-        if(!loginResponse.user.verified) return res.status(403).json({message : "User is not verified"})
         const accessToken = generateAccessToken(loginResponse.user);
         const refreshToken = await generateRefreshToken(loginResponse.user);
         res.cookie('accessToken', accessToken, { httpOnly: true });
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
+        if(!loginResponse.user.verified) return res.status(403).json({message : "User is not verified", user : loginResponse.user, token : accessToken})
         console.log('User logged in successfully:', loginResponse.user);
-        res.status(200).json({message: 'Login successful', user: loginResponse.user});      
+        res.status(200).json({message: 'Login successful', user: loginResponse.user, token : accessToken});      
     } catch (error) {
         console.error('Error during login request:', error);
         res.status(500).json({ error: 'Failed to send login request' });
@@ -70,12 +70,13 @@ exports.Register = async (req,res)=>{
             return res.status(400).json({ error: 'Invalid email format' });
         } 
 
-        if(!PasswordChecker(password)) {
-            return res.status(400).json({ error: 'Password does not meet requirements' });
-        }
         const existingUser = await GetUserByEmail(email);
         if (existingUser) {
             return res.status(400).json({ error: 'User already exists' });
+        }
+
+        if(!PasswordChecker(password)) {
+            return res.status(400).json({ error: 'Password does not meet requirements' });
         }
 
         const hashedPassword  = await bcrypt.hash(password, 10);    
@@ -95,7 +96,7 @@ exports.Register = async (req,res)=>{
 
         res.cookie('accessToken', accessToken, { httpOnly: true});
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        res.status(200).json({message: 'Registration successful', user: userWithoutPassword});
+        res.status(200).json({message: 'Registration successful', user: userWithoutPassword, token : accessToken});
     } catch (error) {
         console.error('Error during registration request:', error);
         res.status(500).json({ error: 'Failed to send registration request' });

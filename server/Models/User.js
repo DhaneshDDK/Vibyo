@@ -10,8 +10,8 @@ const ContactSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
     username : { type: String, required:true, unique: true, sparse: true },
     email: { type: String, required:true, unique: true, sparse: true },
-    verifed : {type : Boolean, default : false},
-    phone_number: { type: String, unique: true, default: null },
+    verified : {type : Boolean, default : false},
+    phone_number: { type: String, default: null },
     password: { type: String, required:true},
     display_name: {type: String, default: function(){return this.username}},
     profile_photo_url: {type:String, default: function(){return `https://api.dicebear.com/5.x/initials/svg?seed=${this.username}`}},
@@ -44,6 +44,7 @@ const UserSchema = new mongoose.Schema({
   saved_messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }]
 },
 })
+
 
 const User = mongoose.model('User', UserSchema);
 module.exports = User;

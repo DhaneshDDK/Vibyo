@@ -7,11 +7,19 @@ import { toast } from 'react-toastify';
 import PasswordStrength from './PasswordStrength'
 import { PostMethod } from '../../ApiService/Auth';
 import ServerRoutes from '../../Routes/Constants'
+import {userNotVerified} from '../../Constants'
+import { useNavigate } from 'react-router-dom';
+import UIRoutes from '../../Routes/UIRoutes';
+import { useDispatch } from 'react-redux';
+import { setUser, logoutUser } from '../../Redux/UserSlice';
 
 const Login = ({isLeft,setIsLeft,mobileToggle}) => {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleShowPassword = () => {
         setShowPassword(!showPassword)
@@ -29,7 +37,7 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
 
     const handleLoginForm = async (e)=>{
       e.preventDefault();
-
+      setLoading(true);
       if(!email || !password){
         toast.warn("All fields are required");
         return;
@@ -53,12 +61,25 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
       try {
          const response = await PostMethod(ServerRoutes.Auth.Login, loginData);
          const responseData = await response.json();
-         console.log(responseData);
-         toast.success("Loggedin successfully");
+         if(response.status==200) {
+          toast.success(responseData.message);
+          dispatch(setUser({user:responseData?.user, token:responseData?.token}));
+          navigate(UIRoutes.Home.home);
+        }
+         else {
+          toast.error(responseData.message)
+          if(responseData.message === userNotVerified) {
+            navigate(`${UIRoutes.Auth.auth}/${UIRoutes.Auth.otp}`);
+            dispatch(setUser({user:responseData?.user, token:responseData?.token}));
+          }else{
+            dispatch(logoutUser())
+          }
+        }
       } catch (error) {
           console.error("Error during login:", error);
           toast.error("Login failed. Please try again.");
       }
+      setLoading(false);
     }
 
   return (
@@ -86,7 +107,7 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
          <div className='flex items-center justify-end gap-5 w-full'>
          <div className='text-[16px] font-serif text-gray-400 cursor-pointer underline'>Forgot password?</div>
          <div className={`text-[16px] font-serif text-gray-400 cursor-pointer underline ${mobileToggle?"block":"hidden"}`} onClick={()=>setIsLeft(!isLeft)}>Signup</div>
-         <button className='bg-red-400 text-white rounded-md px-6 py-2'>LOG IN</button>
+         <button className='bg-red-400 text-white rounded-md px-6 py-2' disabled={loading}>LOG IN</button>
          </div>
         <OAuth/>
     </form>
