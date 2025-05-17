@@ -6,6 +6,9 @@ const Routes = {
         Register: `${serverURL}/api/auth/register`,
         Remove: `${serverURL}/api/auth/remove`,
         verifyToken: `${serverURL}/api/auth/verifyToken`,
+        resendOTP: `${serverURL}/api/auth/resendOTP`,
+        verifyOTP: `${serverURL}/api/auth/verifyOTP`,
+        updateProfile: `${serverURL}/api/auth/updateProfile`,
     },
     Topics: {
         GetAllTopics: `${serverURL}/api/topics/getAllTopics`,

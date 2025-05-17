@@ -3,12 +3,18 @@ import { useState, useRef } from 'react';
 import { IoArrowBackSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { GetMethod, PostMethod } from '../../ApiService/Auth';
+import ServerRoutes from '../../Routes/Constants'
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../../Redux/UserSlice';
 
 const OTP = ({email, length = 6}) => {
   const [otp, setOTP] = useState(Array(length).fill(""));
   const inputsRef = useRef(Array(length).fill(null));
   const navigate = useNavigate();
-  
+  const {user} = useSelector(state=>state.user);
+  const dispatch = useDispatch();
+
   const handleOTPChange = (e, index) => {
     const value = e.target.value.slice(0,1);
     if (/^[0-9]?$/.test(value)) {
@@ -89,25 +95,47 @@ const OTP = ({email, length = 6}) => {
     inputsRef.current[0]?.focus();
   },[])
 
-  const handleResendOTP = () => {
+  const handleResendOTP = async () => {
     // Logic to resend OTP
-    console.log("Resending OTP...");
+     if(user){
+      try {
+        const response = await GetMethod(ServerRoutes.Auth.resendOTP);
+        const responseData = await response.json();
+        console.log(responseData)
+        if(response.status === 200) toast.success("OTP sent successfully")
+        else toast.error(responseData.message)
+     } catch (error) {
+        toast.error("Failed sending otp");
+     }
+     }else{
+      toast.warning("User is not found");
+     }
   }
 
-  const handleVerify = () => {
+  const handleVerify = async() => {
     // Logic to verify OTP
     const otpString = otp.join("");
     if(otpString.length !== length) {
         toast.warn("Please enter a valid OTP");
-        return;
+        return; 
     }
-    console.log("Verifying OTP:", otpString);
+    try {
+       const response = await PostMethod(ServerRoutes.Auth.verifyOTP,{otp:otpString});
+       const responseData = await response.json();
+       if(response.status===200) {
+        dispatch(setUser({user:responseData.user}));
+        toast.success("OTP verified");
+      }else toast.error(responseData.message)
+    } catch (error) {
+       console.log(error);
+       toast.error("Failed verifying OTP")
+    }
   }
   return (
-    <div className='w-screen h-screen bg-BlueBackground flex items-center justify-center '>
+    <div className='relative w-screen h-screen bg-gray-900 flex items-center justify-center '>
         <div className='border-2 w-[90%] md:w-[50%] lg:w-[35%] border-white shadow-lg rounded-2xl p-10 flex flex-col items-start justify-center gap-5'>
-            <div className='flex items-center justify-center gap-2 cursor-pointer' onClick={()=>navigate(-1   )}><IoArrowBackSharp/> <div>Back</div></div>
-            <h2 className='text-2xl md:text-3xl font-bold'>Email Verification</h2>
+            <div className='flex items-center justify-center gap-2 text-gray-400 cursor-pointer' onClick={()=>navigate(-1)}><IoArrowBackSharp/> <div>Back</div></div>
+            <h2 className='text-2xl md:text-3xl font-bold text-gray-100'>Email Verification</h2>
             <div className='text-gray-500 text-sm font-serif'>Enter the {length}-digit verification code sent to {email}</div>
             <div className='flex items-center justify-center gap-1 md:gap-2 w-full'>
                 {
@@ -132,15 +160,15 @@ const OTP = ({email, length = 6}) => {
                     })
                 }
             </div>
-            <div className='text-[16px] font-serif text-gray-400'
-            >Didn't recieve OTP? <span className='text-gray-500 underline cursor-pointer'
+            <div className='text-[16px] font-serif text-gray-500'
+            >Didn't recieve OTP? <span className='text-gray-300 underline cursor-pointer'
             onClick={handleResendOTP}
             >Resend OTP</span></div>
-            <button className='bg-red-400 text-white rounded-md px-6 py-2 self-center'
+            <button className='bg-red-400 hover:bg-gray-800 transition-all duration-200 ease-in-out text-white rounded-md px-6 py-2 self-center'
             onClick={handleVerify}
             >Verify</button>
         </div>
-        
+     <div className='z-[0] absolute bottom-4 text-center w-full text-sm text-gray-500'>© 2025 Vibyo. All rights reserved. Chennai</div>
     </div>
   )
 }

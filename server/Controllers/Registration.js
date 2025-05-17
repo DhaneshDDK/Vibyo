@@ -1,6 +1,7 @@
-const {InsertUser, GetUserByEmail, DeleteUserByEmail} = require('../Services/DBServices/Auth.js');
+const {InsertUser, GetUserByEmail, DeleteUserByUserId, updateUserProfile} = require('../Services/DBServices/Auth.js');
 const {generateAccessToken, generateRefreshToken, deleteRefreshToken} = require('../Services/DBServices/Token.js');
 const bcrypt = require('bcryptjs');
+const {SendOTP, FetchOTP} = require('../Services/OTPService/OTP.js')
 
 const PasswordChecker = (password)=>{
     if(password.length < 8) return false;
@@ -52,10 +53,10 @@ exports.Login = async (req,res)=>{
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
         if(!loginResponse.user.verified) return res.status(403).json({message : "User is not verified", user : loginResponse.user, token : accessToken})
         console.log('User logged in successfully:', loginResponse.user);
-        res.status(200).json({message: 'Login successful', user: loginResponse.user, token : accessToken});      
+        return res.status(200).json({message: 'Login successful', user: loginResponse.user, token : accessToken});      
     } catch (error) {
         console.error('Error during login request:', error);
-        res.status(500).json({ error: 'Failed to send login request' });
+        return res.status(500).json({ error: 'Failed to send login request' });
     }
 }
 
@@ -93,13 +94,13 @@ exports.Register = async (req,res)=>{
         console.log('User registered successfully:', userWithoutPassword);
         const accessToken = generateAccessToken(userWithoutPassword);
         const refreshToken = await generateRefreshToken(userWithoutPassword);
-
+        SendOTP(userWithoutPassword.email,userWithoutPassword._id);
         res.cookie('accessToken', accessToken, { httpOnly: true});
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        res.status(200).json({message: 'Registration successful', user: userWithoutPassword, token : accessToken});
+        return res.status(200).json({message: 'Registration successful', user: userWithoutPassword, token : accessToken});
     } catch (error) {
         console.error('Error during registration request:', error);
-        res.status(500).json({ error: 'Failed to send registration request' });
+        return res.status(500).json({ error: 'Failed to send registration request' });
     }
 }
 
@@ -109,16 +110,15 @@ exports.Remove = async (req,res)=>{
         if (loginResponse.success === "false") {
             return res.status(400).json({ message : "Deleting user is denied", error: loginResponse.message });
         }
-        const {email} = req.body;
-        const deletedUser = await DeleteUserByEmail(email);
+        const userId = loginResponse.user._id;
+        const deletedUser = await DeleteUserByUserId(userId);
         if (!deletedUser) {
             return res.status(400).json({ message : "Deleting user is denied", error: 'User not found' });
         }
-        await LogoutService(req);
-        res.status(200).json({message: 'User deleted successfully'});
+        return res.status(200).json({message: 'User deleted successfully'});
     } catch (error) {
         console.error('Error during user deletion request:', error);
-        res.status(500).json({ error: 'Failed to send user deletion request' });
+        return res.status(500).json({ error: 'Failed to send user deletion request' });
     }
 }
 
@@ -140,10 +140,51 @@ exports.Logout = async (req,res)=>{
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
         console.log('User logged out successfully');
-        res.status(200).json({message: 'Logout successful'});
+        return res.status(200).json({message: 'Logout successful'});
     } catch (error) {
         console.error('Error during logout request:', error);
-        res.status(500).json({ error: 'Failed to send logout request' });
+        return res.status(500).json({ error: 'Failed to send logout request' });
     }
 }
 
+exports.ResendOTP = async (req,res)=>{
+    try {
+        console.log("sending")
+        const {email,_id} = req.user;
+        SendOTP(email,_id);
+        return res.status(200).json({
+            message : `Successfully sent OTP to ${email}`
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message : "Error while resending OTP", error : error})
+    }
+}
+
+exports.VerifyOTP = async (req,res)=>{
+    try {
+        const {otp} = req.body;
+        const OTPFromDB = await FetchOTP(req.user._id);
+        if(!OTPFromDB) return res.status(403).json({message : "OTP expired"})
+        if(OTPFromDB.otp != otp) return res.status(403).json({message : "Invalid OTP"}) 
+        const updatedUser = await updateUserProfile(req.user._id,{verified:true})
+        return res.status(200).json({
+            message : "OTP verified",
+            user : updatedUser
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message:"Failed verifying OTP"})
+    }
+}
+
+exports.UpdateProfile = async (req,res)=>{
+    try {
+        const body = req.body;
+        await updateUserProfile(req.user._id,body);
+        return res.status(200).json({message : "Updated your profile"});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message : "Error updating profile"});
+    }
+}

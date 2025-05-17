@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import UIRoutes from '../../Routes/UIRoutes';
 import { useDispatch } from 'react-redux';
 import { setUser, logoutUser } from '../../Redux/UserSlice';
+import Button from '../../Components/Button/Button';
 
 const Login = ({isLeft,setIsLeft,mobileToggle}) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +38,6 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
 
     const handleLoginForm = async (e)=>{
       e.preventDefault();
-      setLoading(true);
       if(!email || !password){
         toast.warn("All fields are required");
         return;
@@ -57,7 +57,7 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
         email,
         password
       }
-      
+      setLoading(true);
       try {
          const response = await PostMethod(ServerRoutes.Auth.Login, loginData);
          const responseData = await response.json();
@@ -107,7 +107,7 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
          <div className='flex items-center justify-end gap-5 w-full'>
          <div className='text-[16px] font-serif text-gray-400 cursor-pointer underline'>Forgot password?</div>
          <div className={`text-[16px] font-serif text-gray-400 cursor-pointer underline ${mobileToggle?"block":"hidden"}`} onClick={()=>setIsLeft(!isLeft)}>Signup</div>
-         <button className='bg-red-400 text-white rounded-md px-6 py-2' disabled={loading}>LOG IN</button>
+         <Button ButtonText={"LOG IN"} loading={loading}/>
          </div>
         <OAuth/>
     </form>

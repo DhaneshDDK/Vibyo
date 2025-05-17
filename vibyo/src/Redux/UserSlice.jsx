@@ -11,8 +11,8 @@ export const userSlice = createSlice({
     },
     reducers: {
         setUser: (state, action) => {
-            state.user = action.payload.user;
-            state.token = action.payload.token;
+            if(action.payload.user) state.user = action.payload.user;
+            if(action.payload.token) state.token = action.payload.token;
             if (action.payload.token) {
               localStorage.setItem('token', action.payload.token);
             } else {
