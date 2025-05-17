@@ -15,7 +15,7 @@ exports.InsertUser = async (user) => {
 
 exports.GetUserByEmail = async (email) => {
     try {
-        const user = await USER.findOne({ email:email });
+        const user = await USER.findOne({ email:email }).lean();
         return user;    
     }
     catch (error) {

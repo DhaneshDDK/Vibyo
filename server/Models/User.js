@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required:true, unique: true, sparse: true },
     verified : {type : Boolean, default : false},
     phone_number: { type: String, default: null },
-    password: { type: String, required:true},
+    password: { type: String},
     display_name: {type: String, default: function(){return this.username}},
     profile_photo_url: {type:String, default: function(){return `https://api.dicebear.com/5.x/initials/svg?seed=${this.username}`}},
     bio: {type: String, default: 'Hey there! I am using this Vibyo.'},

@@ -2,6 +2,7 @@ const {InsertUser, GetUserByEmail, DeleteUserByUserId, updateUserProfile} = requ
 const {generateAccessToken, generateRefreshToken, deleteRefreshToken} = require('../Services/DBServices/Token.js');
 const bcrypt = require('bcryptjs');
 const {SendOTP, FetchOTP} = require('../Services/OTPService/OTP.js')
+const { OAuth2Client } = require('google-auth-library');
 
 const PasswordChecker = (password)=>{
     if(password.length < 8) return false;
@@ -186,5 +187,46 @@ exports.UpdateProfile = async (req,res)=>{
     } catch (error) {
         console.log(error);
         return res.status(500).json({message : "Error updating profile"});
+    }
+}
+
+
+exports.SignInWithGoogle = async (req,res)=>{
+    try {
+        const { credential } = req.body;
+        if (!credential)  return res.status(400).json({ error: 'Missing credential token' });
+        const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+        const ticket = await client.verifyIdToken({
+           idToken: credential,
+           audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload(); 
+        const { email, name, picture, email_verified, given_name} = payload;
+
+        const existingUser = await GetUserByEmail(email);
+        const accessToken = generateAccessToken(existingUser);
+        const refreshToken = await generateRefreshToken(existingUser);
+        res.cookie('accessToken', accessToken, { httpOnly: true});
+        res.cookie('refreshToken', refreshToken, { httpOnly: true });
+
+        if(existingUser) return res.status(200).json({ message: "Loggedin successfully", user: existingUser, token : accessToken });
+
+        const user = {
+            email : email,
+            username : name,
+            display_name : given_name,
+            profile_photo_url : picture,
+            verified : email_verified
+        };
+        const newUser = await InsertUser(user);
+        console.log('User registered successfully:', newUser);
+        return res.status(200).json({
+            message : "Logged in successfully",
+            user : newUser,
+            token : accessToken
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message : "Login failed"})
     }
 }

@@ -9,6 +9,7 @@ const Routes = {
         resendOTP: `${serverURL}/api/auth/resendOTP`,
         verifyOTP: `${serverURL}/api/auth/verifyOTP`,
         updateProfile: `${serverURL}/api/auth/updateProfile`,
+        googleOAuth: `${serverURL}/api/auth/googleOAuth`,
     },
     Topics: {
         GetAllTopics: `${serverURL}/api/topics/getAllTopics`,

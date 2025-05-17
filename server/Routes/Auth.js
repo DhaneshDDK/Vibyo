@@ -1,12 +1,14 @@
 const router = require("express").Router();
-const {Login, Register,Remove, Logout, ResendOTP, VerifyOTP, UpdateProfile} = require('../Controllers/Registration.js');
+const {Login, Register,Remove, Logout, ResendOTP, VerifyOTP, UpdateProfile, SignInWithGoogle} = require('../Controllers/Registration.js');
 const {verifyToken} = require('../Middlewares/Auth.js')
 
 router.post("/login",Login);
 router.post("/register",Register);
 router.delete("/remove",Remove);
 router.get("/logout",Logout);
-router.post('/updateProfile', verifyToken, UpdateProfile)
+router.post('/updateProfile', verifyToken, UpdateProfile);
+
+router.post('/googleOAuth', SignInWithGoogle);
 
 router.get('/verifyToken',verifyToken,(req,res)=>{
     res.status(200).json({

@@ -3,23 +3,34 @@ import { GoogleLogin } from '@react-oauth/google'
 import {useSelector} from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../Redux/UserSlice';
+import { toast } from 'react-toastify';
+import { PostMethod } from '../../ApiService/Auth';
+import ServerRoutes from '../../Routes/Constants'
+import { useNavigate } from 'react-router-dom';
+import UIRoutes from '../../Routes/UIRoutes'
 
 const OAuth = () => {
   const user = useSelector(state => state.user?.user);
   const dispatch = useDispatch();
-  useEffect(()=>{
-    const token = localStorage.getItem('token');
-    if(token && !user){
-      //call backend to get refresh token
-      // dispatch(setUser({user: userObject, token}));
-    }
-  },[]);
+  const navigate = useNavigate();
 
-  const responseMessage = (response) => {
-    // const userObject = jwtDecode(response.credential);
-    // dispatch(setUser({user: userObject, token: response.credential}));
+  const responseMessage = async (response) => {
+    try {
+      const res = await PostMethod(ServerRoutes.Auth.googleOAuth,{credential:response.credential});
+      const responseData = await res.json();
+      if(res.status===200) {
+            toast.success("Loggedin successfully");
+            dispatch(setUser({user:responseData?.user, token:responseData?.token}));
+            navigate(`${UIRoutes.Home.home}`);
+         }
+         else toast.error(responseData.message);
+    } catch (error) {
+      console.log(error);
+      toast.error("Login Failed") 
+    }
 };
 const errorMessage = (error) => {
+    toast.error("Login Failed")
     console.log("Error occurred: ", error);
 };
 
