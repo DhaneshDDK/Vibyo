@@ -48,7 +48,7 @@ const fetchText = (left = true)=>{
         {left ? text.left.subtext : text.right.subtext}
       </div>
       <button
-        className={`px-5 py-2 text-md border-2 font-semibold border-white rounded-md w-fit text-gray-700 hover:bg-white hover:text-black transition`}
+        className={`px-5 py-2 text-md border-2 font-semibold border-white rounded-md w-fit text-gray-200 hover:bg-white hover:text-black transition`}
         onClick={() => setIsLeft(!isLeft)}
       >
         {left ? text.left.button : text.right.button}
@@ -57,12 +57,14 @@ const fetchText = (left = true)=>{
   );
   
 }
+
+
   return (
     <>
-    <div className={`relative ${mobileToggle? "hidden" : "flex"} items-center justify-center gap-24 w-[90%] lg:w-[70%] h-1/2 bg-[rgba(255,255,255,0.1)] backdrop-blur-md  py-6 px-10 border-2 border-white shadow-md rounded-md`}>
+    <div className={`relative ${mobileToggle? "hidden" : "flex"} items-center justify-center gap-24 w-[90%] lg:w-[70%] h-[22em] bg-[rgba(255,255,255,0.1)] backdrop-blur-md  py-6 px-10 border-2 border-white shadow-md rounded-md`}>
         {fetchText(true)} 
         {fetchText(false)}
-        <div className={`absolute z-10 w-1/2 h-[140%] bg-white -top-[20%] rounded-md transition-all duration-500 ${isLeft ? 'translate-x-[-51%]' : 'translate-x-[51%]'}`}>
+        <div className={`absolute z-10 w-1/2 h-[32em] bg-white ${mobileToggle? "":"-top-[5em]"} rounded-md transition-all duration-500 ${isLeft ? 'translate-x-[-51%]' : 'translate-x-[51%]'}`}>
             {toggleComponent}
         </div>
     </div>

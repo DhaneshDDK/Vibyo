@@ -11,12 +11,19 @@ return jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: '1hr' });
 exports.generateRefreshToken = async (user)=>{
   const refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
   try {
-    const newToken = new Token({
+    const existingToken = await Token.findOne({ user: user._id });
+    if(existingToken){
+        existingToken.refresh_token = refreshToken;
+        existingToken.expires_at = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        await existingToken.save();
+    }else{
+      const newToken = new Token({
       user: user._id,
       refresh_token: refreshToken,
       expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-    });
-    await newToken.save();
+      });
+      await newToken.save();
+    }
     return refreshToken;
   } catch (error) {
     console.error("Error inserting token:", error);
@@ -50,6 +57,19 @@ exports.verifyRefreshToken = async (token) =>{
 exports.deleteRefreshToken = async (token) => {
     try {
         const deletedToken = await Token.findOneAndDelete({ refresh_token: token });
+        if (!deletedToken) {
+            throw new Error("Refresh token not found");
+        }   
+        return deletedToken;
+    } catch (error) {
+        console.error("Error deleting refresh token:", error);
+        throw error;
+    }   
+}
+
+exports.deleteRefreshTokenByUserId = async (userId) => {
+    try {
+        const deletedToken = await Token.findOneAndDelete({ user: userId });
         if (!deletedToken) {
             throw new Error("Refresh token not found");
         }   

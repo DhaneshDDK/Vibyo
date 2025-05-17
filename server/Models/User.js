@@ -19,16 +19,87 @@ const UserSchema = new mongoose.Schema({
     is_online: { type: Boolean, default: false },
     last_seen: { type: Date, default: Date.now },
     contacts: [ContactSchema],
-    blocked_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    blocked_contacts: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }],
     is_discoverable: { type: Boolean, default: true },
     settings: {
     privacy: {
-      last_seen: { type: String, enum: ['everyone', 'contacts', 'nobody'], default: 'everyone' },
-      profile_photo: { type: String, enum: ['everyone', 'contacts', 'nobody'], default: 'everyone' }
+    last_seen: {
+      type: String,
+      enum: ['everyone', 'contacts', 'nobody'],
+      default: 'everyone'
     },
-    notifications: {
-      message: { type: String, enum: ['enabled', 'muted'], default: 'enabled' }
+    profile_photo: {
+      type: String,
+      enum: ['everyone', 'contacts', 'nobody'],
+      default: 'everyone'
     },
+    read_receipts: {
+      type: Boolean,
+      default: true
+    },
+    status_visibility: {
+      type: String,
+      enum: ['everyone', 'contacts', 'nobody'],
+      default: 'contacts'
+    },
+    },
+      notifications: {
+    message: {
+      type: String,
+      enum: ['enabled', 'muted'],
+      default: 'enabled'
+    },
+    call: {
+      type: String,
+      enum: ['enabled', 'muted'],
+      default: 'enabled'
+    },
+    vibration: {
+      type: Boolean,
+      default: true
+    },
+    sound: {
+      type: String,
+      default: 'default'
+    }
+  },
+
+  appearance: {
+    theme: {
+      type: String,
+      enum: ['light', 'dark', 'system'],
+      default: 'system'
+    },
+    font_size: {
+      type: String,
+      enum: ['small', 'medium', 'large'],
+      default: 'medium'
+    }
+  },
+
+  chat: {
+    enter_to_send: {
+      type: Boolean,
+      default: true
+    },
+    media_auto_download: {
+      wifi: { type: Boolean, default: true },
+      mobile_data: { type: Boolean, default: false }
+    },
+    chat_backup: {
+      enabled: { type: Boolean, default: false },
+      frequency: {
+        type: String,
+        enum: ['daily', 'weekly', 'monthly'],
+        default: 'weekly'
+      },
+      last_backup: Date
+    }
+  },
+
     device_info: {
     device_type: { type: String, enum: ['web', 'android', 'ios'], default: 'web' },
     last_active: Date

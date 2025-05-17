@@ -12,6 +12,7 @@ import UIRoutes from '../../Routes/UIRoutes'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../Redux/UserSlice';
+import Button from '../../Components/Button/Button';
 
 const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
    const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +21,7 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
    const [password, setPassword] = useState("");
    const [fullName, setFullName] = useState("");
    const [confirmPassword, setConfirmPassword] = useState("");
+   const [loading,setLoading] = useState(false);
    const navigate = useNavigate(); 
    const dispatch = useDispatch();
 
@@ -70,6 +72,7 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
          password
       }
 
+      setLoading(true);
       try {
          const response = await PostMethod(ServerRoutes.Auth.Register, signupData);
          const responseData = await response.json();
@@ -83,6 +86,7 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
          console.error("Error during signup:", error);
          toast.error("Signup failed. Please try again.");
       }
+      setLoading(false);
    }
   return (
    <form className='flex flex-col items-between justify-center gap-4 w-full h-full bg-white rounded-md p-6'
@@ -124,7 +128,7 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
             </div>
             <div className='flex items-center justify-end gap-10 w-full mt-4'>
             <div className={`text-[16px] font-serif text-gray-400 cursor-pointer underline ${mobileToggle?"block":"hidden"}`} onClick={()=>setIsLeft(!isLeft)}>Login</div>
-            <button className='bg-red-400 text-white rounded-md px-6 py-2'>SIGN UP</button>
+            <Button ButtonText={"SIGN UP"} loading={loading}/>
             </div>
             <OAuth/>
        </form>
