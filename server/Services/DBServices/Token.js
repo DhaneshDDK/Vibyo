@@ -1,6 +1,6 @@
 const Token = require('../../Models/Token');
 const jwt = require('jsonwebtoken');
-
+ 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
@@ -31,9 +31,13 @@ exports.generateRefreshToken = async (user)=>{
   }
 }
 
-exports.verifyAccessToken = (token) =>{
+exports.verifyAccessToken = async (token) =>{
     try {
-        return jwt.verify(token, ACCESS_TOKEN_SECRET);
+        const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
+        const {GetUserByEmail} = require('./Auth')
+        const user = await GetUserByEmail(decoded.email);
+        if(!user) throw new Error("User not longer exists")
+        return decoded;
     } catch (error) {
         console.error("Error verifying access token:", error);
         throw error;
@@ -47,6 +51,9 @@ exports.verifyRefreshToken = async (token) =>{
         if (!storedToken) {
             throw new Error("Refresh token not found");
         }
+        const {GetUserByEmail} = require('./Auth')
+        const user = await GetUserByEmail(decoded.email);
+        if(!user) throw new Error("User not longer exists")
         return decoded;
     } catch (error) {
         console.error("Error verifying refresh token:", error);

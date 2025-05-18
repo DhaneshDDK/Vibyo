@@ -19,7 +19,6 @@ function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {user,token} = useSelector((state)=>state.user);
-
   useEffect(()=>{
      const verifyUser = async()=>{
        try {
@@ -43,6 +42,7 @@ function App() {
           return;
         }
         } catch (error) {
+            dispatch(logoutUser());  
             navigate(`${UIRoutes.Auth.auth}/${UIRoutes.Auth.credential}`);
         } finally{
         }

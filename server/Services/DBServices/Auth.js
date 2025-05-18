@@ -1,6 +1,6 @@
 const USER = require('../../Models/User');
-const {deleteRefreshTokenByUserId} = require('../DBServices/Token');
-const {deleteOTP} = require('../DBServices/OTP')
+const {deleteRefreshTokenByUserId} = require('./Token');
+const {deleteOTP} = require('./OTP')
 
 exports.InsertUser = async (user) => {
     try {

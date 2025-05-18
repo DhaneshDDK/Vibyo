@@ -38,7 +38,7 @@ const LoginChecker = async (req)=>{
         if (!isPasswordValid) {
             return {success : "false", message: 'Incorrect password' };
         }
-        const {password: _, ...userWithoutPassword} = user._doc;
+        const {password: _, ...userWithoutPassword} = user;
         return {success : "true", message: 'Login successful', user: userWithoutPassword};       
 }
 

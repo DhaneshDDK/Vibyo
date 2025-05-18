@@ -3,7 +3,8 @@ export const GetMethod = async (url) => {
         const response = await fetch(url, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         credentials: 'include',
        });
@@ -18,7 +19,8 @@ export const PostMethod = async (url, body) => {
         const response = await fetch(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+             Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         credentials: 'include',
         body: JSON.stringify(body)

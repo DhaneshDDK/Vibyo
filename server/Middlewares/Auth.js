@@ -20,17 +20,21 @@ const refreshAccessToken = async (req,res)=>{
     }    
 }
 exports.verifyToken = async (req,res,next)=>{
-  let {accessToken} = req.cookies;
+  let accessToken = req.headers.authorization?.split(' ')[1] || req.cookies.token;
   try {
      if(!accessToken){
         await refreshAccessToken(req,res);
      }
-     const user = verifyAccessToken(req.cookies?.accessToken);
+     const user = await verifyAccessToken(accessToken);
      req.user = user;
      if(!user.verified && (!req.otp)) return res.status(403).json({message : "User is not verified", user : user})
 
      next();
   } catch (error) {
+     if (error.name === 'JsonWebTokenError') {
+          console.warn(`JWT error: ${error.message}`);
+          return res.status(403).json({message : "Invalid token"})
+     }
       const isAccessTokenRefreshed = await refreshAccessToken(req,res);
       if(isAccessTokenRefreshed) next();
       else{
