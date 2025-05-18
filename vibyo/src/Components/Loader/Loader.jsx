@@ -3,9 +3,9 @@ import { MoonLoader } from "react-spinners";
 
 const Loader = () => {
   return (
-    <div className='w-screen h-screen flex items-center justify-center'>
+    <div className='w-screen h-screen flex items-center justify-center bg-gray-900'>
         <MoonLoader
-        color="gray"
+        color="white"
         size={50}
         aria-label="Loading Spinner"
         data-testid="loader"

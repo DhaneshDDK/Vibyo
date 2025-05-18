@@ -62,15 +62,15 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
          const response = await PostMethod(ServerRoutes.Auth.Login, loginData);
          const responseData = await response.json();
          if(response.status==200) {
+          dispatch(setUser({user:responseData?.user, token:responseData?.token, isVerifying : false}));
           toast.success(responseData.message);
-          dispatch(setUser({user:responseData?.user, token:responseData?.token}));
           navigate(UIRoutes.Home.home);
         }
          else {
           toast.error(responseData.message)
           if(responseData.message === userNotVerified) {
             navigate(`${UIRoutes.Auth.auth}/${UIRoutes.Auth.otp}`);
-            dispatch(setUser({user:responseData?.user, token:responseData?.token}));
+            dispatch(setUser({user:responseData?.user, token:responseData?.token, isVerifying : false}));
           }else{
             dispatch(logoutUser())
           }

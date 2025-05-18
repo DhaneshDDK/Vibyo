@@ -8,15 +8,16 @@ const ProtectedRoute = ({children}) => {
   const {user, isVerifying} = useSelector((state)=>state.user);
   const navigate = useNavigate();
   const [canRender, setCanRender] = useState(false);
+
   useEffect(()=>{
      if (isVerifying) return;
-     if(!user) navigate(`${UIRoutes.Auth.auth}/${UIRoutes.Auth.credential}`);
-     else if(user && !user?.verified) navigate(`${UIRoutes.Auth.auth}/${UIRoutes.Auth.otp}`);
+     if(!user) navigate(UIRoutes.Auth.auth);
+     else if(user && !user?.verified) navigate(UIRoutes.Auth.otp);
      else setCanRender(true);
   },[user,navigate,isVerifying]);
   
-  return isVerifying ? <Loader/> : (canRender ? <>{children}</> : <Loader/>);
-
+  if(isVerifying || !canRender) return <Loader/>
+  return <>{children}</>
 }
 
 export default ProtectedRoute

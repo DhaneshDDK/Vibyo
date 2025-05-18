@@ -169,9 +169,14 @@ exports.VerifyOTP = async (req,res)=>{
         if(!OTPFromDB) return res.status(403).json({message : "OTP expired"})
         if(OTPFromDB.otp != otp) return res.status(403).json({message : "Invalid OTP"}) 
         const updatedUser = await updateUserProfile(req.user._id,{verified:true})
+        const accessToken = generateAccessToken(updatedUser);
+        const refreshToken = await generateRefreshToken(updatedUser);
+        res.cookie('accessToken', accessToken, { httpOnly: true});
+        res.cookie('refreshToken', refreshToken, { httpOnly: true });
         return res.status(200).json({
             message : "OTP verified",
-            user : updatedUser
+            user : updatedUser,
+            token : accessToken
         })
     } catch (error) {
         console.log(error);

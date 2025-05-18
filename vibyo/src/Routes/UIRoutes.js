@@ -1,8 +1,7 @@
 const UIRoutes = {
     Auth : {
-        auth : '/auth',
-        credential : 'user',
-        otp : "otp"
+        auth : '/auth/user',
+        otp : "/auth/otp"
     },
     Home : {
         home : '/'

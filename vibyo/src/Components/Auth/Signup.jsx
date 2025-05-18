@@ -77,8 +77,8 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
          const response = await PostMethod(ServerRoutes.Auth.Register, signupData);
          const responseData = await response.json();
          if(response.status===200) {
+            dispatch(setUser({user:responseData?.user, token:responseData?.token, isVerifying : false}));
             toast.success("Registered successfully");
-            dispatch(setUser({user:responseData?.user, token:responseData?.token}));
             navigate(`${UIRoutes.Auth.auth}/${UIRoutes.Auth.otp}`);
          }
          else toast.error(responseData.error);

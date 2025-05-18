@@ -123,7 +123,7 @@ const OTP = ({email, length = 6}) => {
        const response = await PostMethod(ServerRoutes.Auth.verifyOTP,{otp:otpString});
        const responseData = await response.json();
        if(response.status===200) {
-        dispatch(setUser({user:responseData.user}));
+        dispatch(setUser({user:responseData.user, token : responseData.token}));
         toast.success("OTP verified");
       }else toast.error(responseData.message)
     } catch (error) {

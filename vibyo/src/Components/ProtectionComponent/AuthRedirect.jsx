@@ -3,23 +3,29 @@ import UIRoutes from '../../Routes/UIRoutes'
 import { useSelector } from 'react-redux'
 import React, {useEffect, useState} from 'react'
 import Loader from '../Loader/Loader'
+import { useLocation } from 'react-router-dom'
 
 const AuthRedirect = ({children}) => {
     const navigate = useNavigate();
-    const [canRender, setCanRender] = useState(false);
     const {token, user, isVerifying} = useSelector((state)=>state.user);
+    const location = useLocation();
+    const [canRender, setCanRender] = useState(false);
 
     useEffect(()=>{
       if (isVerifying) return;
       if(token && user?.verified){ 
         navigate(`${UIRoutes.Home.home}`);    
       } 
-      else {
-        setCanRender(true);
+      else if(token && !user?.verified && location.pathname === UIRoutes.Auth.auth) {
+        navigate(UIRoutes.Auth.otp);
       }
-    },[user,token,navigate,isVerifying])
+      else if (!token && location.pathname === UIRoutes.Auth.otp) {
+       navigate(UIRoutes.Auth.auth);
+      }else setCanRender(true)
+    },[user,token,navigate,isVerifying, location.pathname])
 
-    return isVerifying ? <Loader/> : (canRender ? <>{children}</> : <Loader/>);
-} 
+    if(!canRender || isVerifying) return <Loader/>
+    return <>{children}</>
+s} 
 
 export default AuthRedirect

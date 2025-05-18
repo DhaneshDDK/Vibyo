@@ -37,7 +37,7 @@ exports.verifyAccessToken = async (token) =>{
         const {GetUserByEmail} = require('./Auth')
         const user = await GetUserByEmail(decoded.email);
         if(!user) throw new Error("User not longer exists")
-        return decoded;
+        return user;
     } catch (error) {
         console.error("Error verifying access token:", error);
         throw error;
@@ -54,7 +54,7 @@ exports.verifyRefreshToken = async (token) =>{
         const {GetUserByEmail} = require('./Auth')
         const user = await GetUserByEmail(decoded.email);
         if(!user) throw new Error("User not longer exists")
-        return decoded;
+        return user;
     } catch (error) {
         console.error("Error verifying refresh token:", error);
         throw error;

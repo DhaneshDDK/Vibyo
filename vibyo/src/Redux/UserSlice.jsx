@@ -7,18 +7,14 @@ export const userSlice = createSlice({
     initialState: {
         user: null,
         token: storedToken || null,
-        isVerifying : true || !!storedToken,
+        isVerifying : false,
     },
     reducers: {
         setUser: (state, action) => {
             if(action.payload.user) state.user = action.payload.user;
             if(action.payload.token) state.token = action.payload.token;
-            if (action.payload.token) {
-              localStorage.setItem('token', action.payload.token);
-            } else {
-              localStorage.removeItem('token');
-            }
-            state.isVerifying = false;
+            if(state.payload?.isVerifying) state.isVerifying = action.payload.isVerifying;
+            if (action.payload.token) localStorage.setItem('token', action.payload.token);
         },
         logoutUser: (state) => {
             state.user = null;
