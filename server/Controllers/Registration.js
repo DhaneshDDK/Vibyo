@@ -187,8 +187,8 @@ exports.VerifyOTP = async (req,res)=>{
 exports.UpdateProfile = async (req,res)=>{
     try {
         const body = req.body;
-        await updateUserProfile(req.user._id,body);
-        return res.status(200).json({message : "Updated your profile"});
+        const updatedUser = await updateUserProfile(req.user._id,body);
+        return res.status(200).json({message : "Updated your profile", user : updatedUser});
     } catch (error) {
         console.log(error);
         return res.status(500).json({message : "Error updating profile"});
@@ -209,13 +209,6 @@ exports.SignInWithGoogle = async (req,res)=>{
         const { email, name, picture, email_verified, given_name} = payload;
 
         const existingUser = await GetUserByEmail(email);
-        const accessToken = generateAccessToken(existingUser);
-        const refreshToken = await generateRefreshToken(existingUser);
-        res.cookie('accessToken', accessToken, { httpOnly: true});
-        res.cookie('refreshToken', refreshToken, { httpOnly: true });
-
-        if(existingUser) return res.status(200).json({ message: "Loggedin successfully", user: existingUser, token : accessToken });
-
         const user = {
             email : email,
             username : name,
@@ -223,7 +216,14 @@ exports.SignInWithGoogle = async (req,res)=>{
             profile_photo_url : picture,
             verified : email_verified
         };
-        const newUser = await InsertUser(user);
+        let newUser
+        if(existingUser) newUser = await updateUserProfile(existingUser._id, user);
+        else newUser = await InsertUser(user);
+        console.log("newuser", newUser)
+        const accessToken = generateAccessToken(newUser);
+        const refreshToken = await generateRefreshToken(newUser);
+        res.cookie('accessToken', accessToken, { httpOnly: true});
+        res.cookie('refreshToken', refreshToken, { httpOnly: true });
         console.log('User registered successfully:', newUser);
         return res.status(200).json({
             message : "Logged in successfully",

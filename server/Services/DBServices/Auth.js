@@ -6,7 +6,7 @@ exports.InsertUser = async (user) => {
     try {
         const newUser = new USER(user);
         await newUser.save();
-        return newUser;
+        return newUser.toObject();
     } catch (error) {
         console.error("Error inserting user:", error);
         throw error;
@@ -29,7 +29,7 @@ exports.DeleteUserByUserId = async (userId) => {
         deleteOTP(userId);
         deleteRefreshTokenByUserId(userId);
         const user = await USER.findOneAndDelete
-        ({ _id : userId });
+        ({ _id : userId }).lean();
         return user;        
     }
     catch (error) {
