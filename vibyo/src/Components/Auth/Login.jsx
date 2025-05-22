@@ -69,7 +69,7 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
          else {
           toast.error(responseData.message)
           if(responseData.message === userNotVerified) {
-            navigate(`${UIRoutes.Auth.auth}/${UIRoutes.Auth.otp}`);
+            navigate(UIRoutes.Auth.otp);
             dispatch(setUser({user:responseData?.user, token:responseData?.token, isVerifying : false}));
           }else{
             dispatch(logoutUser())
@@ -83,7 +83,7 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
     }
 
   return (
-    <form className='flex flex-col items-between justify-center gap-6 w-full h-full bg-white rounded-md p-6' 
+    <form className='flex flex-col items-between justify-center gap-6 w-full h-full bg-white  rounded-md p-6' 
     onSubmit={handleLoginForm}>
          <div className='text-red-400 font-bold text-3xl'>LOG IN</div>
          <div>
@@ -110,6 +110,7 @@ const Login = ({isLeft,setIsLeft,mobileToggle}) => {
          <Button ButtonText={"LOG IN"} loading={loading}/>
          </div>
         <OAuth/>
+        <div className='self-center text-sm text-gray-500'>© 2025 Vibyo. All rights reserved. Chennai</div>
     </form>
   )
 }

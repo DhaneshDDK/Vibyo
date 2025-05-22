@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createTopic, deleteTopic } = require('../Kafka/KafkaConfig.js');
+const { createTopic, deleteTopic } = require('../KafkaConfig');
 
 router.post('/create', (req,res)=>{
     try {
@@ -24,7 +24,7 @@ router.post('/delete', (req,res)=>{
         })
         .catch((error) => {
             console.error('Error deleting topics:', error);
-            res.status(500).json({ error: 'Failed to delete topics' });
+            res.status(500).json({ message: 'Failed to delete topics', error : error.message });
         }); 
 });
 

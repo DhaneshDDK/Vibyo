@@ -79,7 +79,7 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
          if(response.status===200) {
             dispatch(setUser({user:responseData?.user, token:responseData?.token, isVerifying : false}));
             toast.success("Registered successfully");
-            navigate(`${UIRoutes.Auth.auth}/${UIRoutes.Auth.otp}`);
+            navigate(UIRoutes.Auth.otp);
          }
          else toast.error(responseData.error);
       } catch (error) {
@@ -131,6 +131,7 @@ const Signup = ({isLeft,setIsLeft,mobileToggle}) => {
             <Button ButtonText={"SIGN UP"} loading={loading}/>
             </div>
             <OAuth/>
+            <div className='self-center text-sm text-gray-500'>© 2025 Vibyo. All rights reserved. Chennai</div>
        </form>
   )
 }

@@ -8,6 +8,7 @@ export const userSlice = createSlice({
         user: null,
         token: storedToken || null,
         isVerifying : false,
+        isDarkTheme : true
     },
     reducers: {
         setUser: (state, action) => {
@@ -15,6 +16,9 @@ export const userSlice = createSlice({
             if(action.payload.token) state.token = action.payload.token;
             if(state.payload?.isVerifying) state.isVerifying = action.payload.isVerifying;
             if (action.payload.token) localStorage.setItem('token', action.payload.token);
+        },
+        setTheme : (state, action)=>{
+            if(action.payload.isDarkTheme !== undefined) state.isDarkTheme = action.payload.isDarkTheme
         },
         logoutUser: (state) => {
             state.user = null;
@@ -25,5 +29,5 @@ export const userSlice = createSlice({
     }
 });
 
-export const {setUser, logoutUser} = userSlice.actions;
+export const {setUser, logoutUser, setTheme} = userSlice.actions;
 export default userSlice.reducer;

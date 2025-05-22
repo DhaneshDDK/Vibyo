@@ -3,7 +3,7 @@ import { MoonLoader } from "react-spinners";
 
 const Loader = () => {
   return (
-    <div className='w-screen h-screen flex items-center justify-center bg-gray-900'>
+    <div className='w-screen h-screen flex items-center justify-center'>
         <MoonLoader
         color="white"
         size={50}

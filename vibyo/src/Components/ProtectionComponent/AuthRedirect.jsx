@@ -16,9 +16,6 @@ const AuthRedirect = ({children}) => {
       if(token && user?.verified){ 
         navigate(`${UIRoutes.Home.home}`);    
       } 
-      else if(token && !user?.verified && location.pathname === UIRoutes.Auth.auth) {
-        navigate(UIRoutes.Auth.otp);
-      }
       else if (!token && location.pathname === UIRoutes.Auth.otp) {
        navigate(UIRoutes.Auth.auth);
       }else setCanRender(true)

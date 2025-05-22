@@ -1,0 +1,20 @@
+{
+  "name": "kafka",
+  "version": "1.0.0",
+  "description": "",
+  "main": "KafkaConfig.js",
+  "scripts": {
+    "kafka": "nodemon KafkaIndex.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "kafkajs": "^2.2.4",
+    "nodemon": "^3.1.10"
+  }
+}

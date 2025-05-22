@@ -2,7 +2,7 @@ const {Kafka} = require('kafkajs');
 
 const kafka = new Kafka({
     clientId: 'vibyo',
-    brokers: ['192.168.116.134:9092'],
+    brokers: ['192.168.0.111:9092'],
 });
 
 const createTopic = async (topicsList, partitions = 1, replicationFactor = 1) => {
@@ -10,6 +10,7 @@ const createTopic = async (topicsList, partitions = 1, replicationFactor = 1) =>
         console.error('Error: topicsList must be a non-empty array.');
         return;
     }
+    console.log(topicsList)
     const admin = kafka.admin();
     console.log('Connecting to Kafka admin...');
     await admin.connect();

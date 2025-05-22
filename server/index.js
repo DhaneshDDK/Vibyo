@@ -36,8 +36,5 @@ app.get('/',(req,res)=>{
     res.send('Welcome to the VIBYO API!');
 })
 
-const TopicRouter = require('./Routes/Topics.js');
-app.use('/api/topics', TopicRouter);
-
 const AuthRouter = require('./Routes/Auth.js');
 app.use('/api/auth', AuthRouter);

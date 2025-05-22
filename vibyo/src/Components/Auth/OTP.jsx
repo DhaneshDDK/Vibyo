@@ -7,6 +7,8 @@ import { GetMethod, PostMethod } from '../../ApiService/Auth';
 import ServerRoutes from '../../Routes/Constants'
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../../Redux/UserSlice';
+import Button from '../Button/Button';
+import Logo from '../../assets/Logo.png'
 
 const OTP = ({email, length = 6}) => {
   const [otp, setOTP] = useState(Array(length).fill(""));
@@ -136,7 +138,7 @@ const OTP = ({email, length = 6}) => {
         <div className='border-2 w-[90%] md:w-[50%] lg:w-[35%] border-white shadow-lg rounded-2xl p-10 flex flex-col items-start justify-center gap-5'>
             <div className='flex items-center justify-center gap-2 text-gray-400 cursor-pointer' onClick={()=>navigate(-1)}><IoArrowBackSharp/> <div>Back</div></div>
             <h2 className='text-2xl md:text-3xl font-bold text-gray-100'>Email Verification</h2>
-            <div className='text-gray-500 text-sm font-serif'>Enter the {length}-digit verification code sent to {email}</div>
+            <div className='text-gray-500 text-sm font-serif'>Enter the {length}-digit verification code sent to {email?? user?.email}</div>
             <div className='flex items-center justify-center gap-1 md:gap-2 w-full'>
                 {
                     otp.map((value, index) => {
@@ -164,10 +166,13 @@ const OTP = ({email, length = 6}) => {
             >Didn't recieve OTP? <span className='text-gray-300 underline cursor-pointer'
             onClick={handleResendOTP}
             >Resend OTP</span></div>
-            <button className='bg-red-400 hover:bg-gray-800 transition-all duration-200 ease-in-out text-white rounded-md px-6 py-2 self-center'
-            onClick={handleVerify}
-            >Verify</button>
+            <div className='self-center'><Button ButtonText={"Verify"} onClick={handleVerify}/></div>
+            <p className=' font-serif text-red-600 text-sm self-center select-none'>Dont share OTP with anyone</p>
         </div>
+      <div className={`z-[-10] md:z-[0] absolute left-10 top-10 flex items-center justify-center gap-4`}>
+         <img src={Logo} alt="logo" className='md:w-70' width={30}/> 
+         <div className={`font-serif text-lg md:text-3xl text-white`}>VIBYO</div>
+       </div>
      <div className='z-[0] absolute bottom-4 text-center w-full text-sm text-gray-500'>© 2025 Vibyo. All rights reserved. Chennai</div>
     </div>
   )

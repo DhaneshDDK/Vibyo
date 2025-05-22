@@ -31,9 +31,12 @@ exports.generateRefreshToken = async (user)=>{
   }
 }
 
-exports.verifyAccessToken = async (token) =>{
+exports.verifyAccessToken = async (token, otp=false) =>{
     try {
+        console.log("verifying access token")
         const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
+        if(!otp) return decoded;
+        console.log("checking for user update.....");
         const {GetUserByEmail} = require('./Auth')
         const user = await GetUserByEmail(decoded.email);
         if(!user) throw new Error("User not longer exists")
@@ -44,13 +47,14 @@ exports.verifyAccessToken = async (token) =>{
     }
 }
 
-exports.verifyRefreshToken = async (token) =>{
+exports.verifyRefreshToken = async (token, otp=false) =>{
     try {
-        const decoded = jwt.verify(token, REFRESH_TOKEN_SECRET);
         const storedToken = await Token.findOne({ refresh_token: token });
         if (!storedToken) {
             throw new Error("Refresh token not found");
         }
+        const decoded = jwt.verify(token, REFRESH_TOKEN_SECRET);
+        if(!otp) return decoded;
         const {GetUserByEmail} = require('./Auth')
         const user = await GetUserByEmail(decoded.email);
         if(!user) throw new Error("User not longer exists")

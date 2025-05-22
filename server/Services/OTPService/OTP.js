@@ -1,7 +1,7 @@
 const crypto = require('crypto');
-const {sendEmail} = require('../MailServices/Email')
+const {sendEmail} = require('../../ApiService/Email')
 const {InsertOTP,fetchOTP} = require('../DBServices/OTP');
-const OTPTemplate = require('../MailServices/EmailTemplates/OTP');
+const OTPTemplate = require('./EmailTemplates/OTP');
 
 function generateOtp() {
   const otp = crypto.randomInt(100000, 1000000); // min inclusive, max exclusive
@@ -12,7 +12,8 @@ exports.SendOTP = async (email,userId)=>{
     try {
       const otp = generateOtp();
       const insertedOTP = await InsertOTP(userId,otp);
-      sendEmail(email,"Vibyo: Email Verification", OTPTemplate(otp));
+      sendEmail({email:email,subject:"Vibyo: Email Verification", message :OTPTemplate(otp)});
+      return;
     } catch (error) {
       console.log("Error while sending OTP", error);
       throw error;

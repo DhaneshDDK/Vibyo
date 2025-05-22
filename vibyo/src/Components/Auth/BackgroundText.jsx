@@ -61,7 +61,8 @@ const fetchText = (left = true)=>{
 
   return (
     <>
-    <div className={`relative ${mobileToggle? "hidden" : "flex"} items-center justify-center gap-24 w-[90%] lg:w-[70%] h-[22em] bg-[rgba(255,255,255,0.1)] backdrop-blur-md  py-6 px-10 border-2 border-white shadow-md rounded-md`}>
+    <div className={`relative ${mobileToggle? "hidden" : "flex"} items-center justify-center gap-24 w-[90%] lg:w-[70%] h-[22em] bg-[rgba(10,4,4,0.1)] backdrop-blur-md py-6 px-10 
+     shadow-[0_0_25px_5px_rgba(378,17,70,0.5)] rounded-md border-2 border-gray-700`}>
         {fetchText(true)} 
         {fetchText(false)}
         <div className={`absolute z-10 w-1/2 h-[32em] bg-white ${mobileToggle? "":"-top-[5em]"} rounded-md transition-all duration-500 ${isLeft ? 'translate-x-[-51%]' : 'translate-x-[51%]'}`}>

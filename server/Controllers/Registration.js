@@ -52,7 +52,7 @@ exports.Login = async (req,res)=>{
         const refreshToken = await generateRefreshToken(loginResponse.user);
         res.cookie('accessToken', accessToken, { httpOnly: true });
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        if(!loginResponse.user.verified) return res.status(403).json({message : "User is not verified", user : loginResponse.user, token : accessToken})
+        if(!loginResponse.user.verified) return res.status(403).json({message : "User is not verified", user : {verified:false, email:loginResponse.user.email}, token : accessToken})
         console.log('User logged in successfully:', loginResponse.user);
         return res.status(200).json({message: 'Login successful', user: loginResponse.user, token : accessToken});      
     } catch (error) {
@@ -91,14 +91,14 @@ exports.Register = async (req,res)=>{
         if (!newUser) {
             return res.status(500).json({ error: 'Failed to create user' });
         }
-        const {password: _, ...userWithoutPassword} = newUser._doc;
+        const {password: _, ...userWithoutPassword} = newUser;
         console.log('User registered successfully:', userWithoutPassword);
         const accessToken = generateAccessToken(userWithoutPassword);
         const refreshToken = await generateRefreshToken(userWithoutPassword);
         SendOTP(userWithoutPassword.email,userWithoutPassword._id);
         res.cookie('accessToken', accessToken, { httpOnly: true});
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        return res.status(200).json({message: 'Registration successful', user: userWithoutPassword, token : accessToken});
+        return res.status(200).json({message: 'Registration successful', user: {verified:false,email:loginResponse.user.email}, token : accessToken});
     } catch (error) {
         console.error('Error during registration request:', error);
         return res.status(500).json({ error: 'Failed to send registration request' });

@@ -4,7 +4,7 @@ const refreshAccessToken = async (req,res)=>{
     const {refreshToken} = req.cookies;
     try {
         console.log("Refreshing access token...")
-        const user = await verifyRefreshToken(refreshToken);
+        const user = await verifyRefreshToken(refreshToken, req?.otp ?? false);
         const refreshTokenFromDB = await fetchRefreshToken(refreshToken);
         if(refreshTokenFromDB.refresh_token !== refreshToken) {
             console.log("Tokens not matched")
@@ -25,9 +25,9 @@ exports.verifyToken = async (req,res,next)=>{
      if(!accessToken){
         await refreshAccessToken(req,res);
      }
-     const user = await verifyAccessToken(accessToken);
+     const user = await verifyAccessToken(accessToken, req?.otp ?? false);
      req.user = user;
-     if(!user.verified && (!req.otp)) return res.status(403).json({message : "User is not verified", user : user})
+     if(!user.verified && (!req.otp)) return res.status(403).json({message : "User is not verified", user : {verified:false,email:loginResponse.user.email}})
 
      next();
   } catch (error) {

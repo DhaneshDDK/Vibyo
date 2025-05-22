@@ -15,12 +15,15 @@ import ServerRoutes from './Routes/Constants.js'
 import { setUser, logoutUser} from "./Redux/UserSlice.jsx"
 import { userNotVerified } from "./Constants.js"
 import Loader from "./Components/Loader/Loader.jsx"
+import { useLocation } from "react-router-dom"
+import PageNotFound from "./Components/PageNotFound/PageNotFound.jsx"
 
 function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {user,token, isVerifying} = useSelector((state)=>state.user);
   const [isAppReady, setIsAppReady] = useState(false);
+  const location = useLocation();
 
  useEffect(() => {
   const verifyUser = async () => {
@@ -43,30 +46,29 @@ function App() {
         }
       }
     } catch (error) {
-      dispatch(logoutUser());
-      navigate(UIRoutes.Auth.auth);
+      console.log(error)
     } finally{
-      setIsAppReady(true)
+       setTimeout(()=>{setIsAppReady(true)},50)
     }
   };
 
   if(token && !user) verifyUser();
-  else setIsAppReady(true);
+  else setTimeout(()=>{setIsAppReady(true)},50)
 }, [user, token, dispatch, navigate]);
 
 if (!isAppReady) return <Loader />;
 
   return (  
-    <>
+    <div className="bg-[url('./assets/bgImage.svg')] bg-contain w-screen h-screen ">
       <Routes>
           <Route path={UIRoutes.Auth.auth} element={<AuthRedirect><Auth/></AuthRedirect>}/>
           <Route path={UIRoutes.Auth.otp} element={<AuthRedirect><OTP/></AuthRedirect>}/>
          <Route path={UIRoutes.Home.home} element = {
             <ProtectedRoute><Home/></ProtectedRoute>
          }/>
-         <Route path='*' element={<Loader/>} />
+         <Route path='*' element={<PageNotFound/>} />
       </Routes>
-    </>
+    </div>
   )
 }
 
